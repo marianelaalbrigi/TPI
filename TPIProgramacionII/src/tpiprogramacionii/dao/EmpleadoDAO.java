@@ -157,8 +157,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
             
             stmtArea.setString(1, empleado.getArea());
             stmtArea.setInt(2, empleado.getId());
-            stmtArea.executeUpdate();
-            
+                        
             int rowsAffected = stmtArea.executeUpdate();
             if (rowsAffected == 0) {
                 throw new SQLException("No se pudo actualizar el área de empleado con ID: " + empleado.getId());
@@ -292,7 +291,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
         empleado.setApellido(rs.getString("apellido"));
         empleado.setDni(rs.getString("dni"));
 
-        int idLegajo = rs.getInt("id_legajo");
+        int idLegajo = rs.getInt("legajo_id");
         if (idLegajo > 0 && !rs.wasNull()) {
             Legajo legajo = new Legajo();
             legajo.setNroLegajo(rs.getString("nro_legajo"));
