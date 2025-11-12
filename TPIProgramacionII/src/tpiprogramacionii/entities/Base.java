@@ -6,11 +6,11 @@ public abstract class Base {
     private int id;
     private boolean eliminado;
 
-    public Base() {
-        this.eliminado = eliminado;        
+    protected Base() {
+        this.eliminado = false;        
     }
 
-    public Base(int id, boolean eliminado) {
+    protected Base(int id, boolean eliminado) {
         this.id = id;
         this.eliminado = eliminado;
     }
