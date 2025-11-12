@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package tpiprogramacionii.dao;
 
-/**
- *
- * @author jnowell
- */
+package tpiprogramacionii.dao;
+import java.sql.Connection;
+import java.util.List;
+
 public interface GenericDAO<T> {
     
+    public void insertar(T entidad) throws Exception;
+    void insertTx(T entidad, Connection conn) throws Exception;
+    void actualizar(T entidad)throws Exception;
+    void eliminar(int id)throws Exception;
+    T leer(int id)throws Exception;
+    List<T> leerTodos()throws Exception;
+
 }

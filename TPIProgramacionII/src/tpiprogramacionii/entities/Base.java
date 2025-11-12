@@ -1,39 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package tpiprogramacionii.entities;
 
-/**
- *
- * @author jnowell
- */
 public abstract class Base {
-    private long id;
-    private Boolean eliminado;
+    
+    private int id;
+    private boolean eliminado;
 
-    public Base(long id, Boolean eliminado) {
+    public Base() {
+        this.eliminado = eliminado;        
+    }
+
+    public Base(int id, boolean eliminado) {
         this.id = id;
         this.eliminado = eliminado;
     }
-
-    public long getId() {
+           
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Boolean getEliminado() {
+    public boolean isEliminado() {
         return eliminado;
     }
 
-    public void setEliminado(Boolean eliminado) {
+    public void setEliminado(boolean eliminado) {
         this.eliminado = eliminado;
     }
-
-    public Base() {
-    }
-    
+            
 }
