@@ -145,17 +145,31 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
         
     //------------------------------------------------------------------------------------------------------------------  
      /**
-     * Actualiza el área de un empleado existente en la base de datos.
-     * Verifica si la actualización afectó al menos una fila; si no hay actualización lanza una SQLException
+     * Actualiza el área de un empleado existente en la base de datos (versión autónoma)
+     * Crea y cierra su propia conexión
      * @param empleado instancia de Empleado del cual se extrae el Id y área
      * @throws Exception en caso de error de conexión o de ejecución 
      */    
     
     @Override
     public void actualizar(Empleado empleado) throws Exception {
-        try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement stmtArea = conn.prepareStatement(UPDATE_AREA)) {
-            
+        try (Connection conn = DataBaseConnection.getConnection()) {
+            actualizarTx(empleado, conn);
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------------------    
+    
+    /**
+     * Actualiza el área de un empleado usando una conexión existente (versión transaccional)
+     * @param empleado instancia de Empleado del cual se extrae el Id y área
+     * @param conn Conexión transaccional activa
+     * @throws Exception en caso de error de ejecución 
+     */    
+    
+    @Override
+    public void actualizarTx(Empleado empleado, Connection conn) throws Exception {
+        try (PreparedStatement stmtArea = conn.prepareStatement(UPDATE_AREA)) {
             stmtArea.setString(1, empleado.getArea());
             stmtArea.setInt(2, empleado.getId());
                         
@@ -169,17 +183,32 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     //--------------------------------------------------------------------------------------------------------------    
         
     /**
-    * Elimina lógicamente un empleado y su legajo asociado en la base de datos.
-    * Marca como eliminado (Baja lógica) tanto al empleado como al legajo relacionado.
-    * @param id del empleado que se desea eliminar.
-    * @throws Exception en caso de error de conexión o de ejecución.
+    * Elimina lógicamente un empleado (versión autónoma)
+    * Crea y cierra su propia conexión
+    * @param id del empleado que se desea eliminar
+    * @throws Exception en caso de error de conexión o de ejecución
     */
     
     @Override
     public void eliminar(int id) throws Exception {
-        try (Connection conex = DataBaseConnection.getConnection();
-                PreparedStatement stmt = conex.prepareStatement(DELETE_SQL)) {
-
+        try (Connection conex = DataBaseConnection.getConnection()) {
+            eliminarTx(id, conex);
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------------------    
+    
+    /**
+    * Elimina lógicamente un empleado usando una conexión existente (versión transaccional)
+    * Marca como eliminado (Baja lógica) el empleado
+    * @param id del empleado que se desea eliminar
+    * @param conex Conexión transaccional activa
+    * @throws Exception en caso de error de ejecución
+    */
+    
+    @Override
+    public void eliminarTx(int id, Connection conex) throws Exception {
+        try (PreparedStatement stmt = conex.prepareStatement(DELETE_SQL)) {
             stmt.setInt(1, id);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {

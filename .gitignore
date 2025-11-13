@@ -1,0 +1,22 @@
+# Librerías externas (cada desarrollador debe descargarlas)
+TPIProgramacionII/lib/
+*.jar
+
+# Archivos de prueba/test
+TPIProgramacionII/src/tpiprogramacionii/utils/TestConnection.java
+
+# Directorios de build de NetBeans
+TPIProgramacionII/build/
+TPIProgramacionII/dist/
+TPIProgramacionII/nbproject/private/
+
+
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.iml

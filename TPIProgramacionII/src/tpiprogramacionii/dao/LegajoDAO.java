@@ -85,16 +85,31 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     //--------------------------------------------------------------------------------------------------------------    
           
     /**
-     * Inserta de Legajo en la base de datos (id Legajo autoincremental)
-     * Verifica que la operación afecte al menos una fila
-     * @param legajo(instancia de Legajo) contiene los valores para la inserción
+     * Actualiza la categoría de un legajo en la base de datos (versión autónoma)
+     * Crea y cierra su propia conexión
+     * @param legajo contiene los valores para la actualización
      * @throws Exception si ocurre un error al conectarse o ejecutar la instrucción SQL
      */
     
     @Override
     public void actualizar(Legajo legajo) throws Exception {
-         try (Connection conex = DataBaseConnection.getConnection();
-            PreparedStatement stmt = conex.prepareStatement(UPDATE_CATEGORIA)) {
+         try (Connection conex = DataBaseConnection.getConnection()) {
+            actualizarTx(legajo, conex);
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------------------    
+    
+    /**
+     * Actualiza la categoría de un legajo usando una conexión existente (versión transaccional)
+     * @param legajo contiene los valores para la actualización
+     * @param conex Conexión transaccional activa
+     * @throws Exception si ocurre un error al ejecutar la actualización
+     */
+    
+    @Override
+    public void actualizarTx(Legajo legajo, Connection conex) throws Exception {
+        try (PreparedStatement stmt = conex.prepareStatement(UPDATE_CATEGORIA)) {
             stmt.setString(1, legajo.getCategoria());
             stmt.setInt(2, legajo.getId());
             
@@ -108,19 +123,32 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     //--------------------------------------------------------------------------------------------------------------    
       
     /**
-    * Elimina lógicamente un legajo y su empleado asociado
-    * Marca como eliminado (baja lógica) tanto al legajo como al empleado relacionado
-    * Valida que el legajo no esté eliminado previamente
+    * Elimina lógicamente un legajo (versión autónoma)
+    * Crea y cierra su propia conexión
     * @param id Id del legajo que se desea eliminar
-    * @throws SQLException Si ocurre un error de conexión o ejecución
-    * @throws IllegalStateException Si el legajo ya estaba eliminado
+    * @throws Exception Si ocurre un error de conexión o ejecución
     */
     
     @Override
-    public void eliminar(int id) throws SQLException {
-        try (Connection conex = DataBaseConnection.getConnection();
-             PreparedStatement stmt = conex.prepareStatement(DELETE_SQL)) {
-
+    public void eliminar(int id) throws Exception {
+        try (Connection conex = DataBaseConnection.getConnection()) {
+            eliminarTx(id, conex);
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------------------    
+    
+    /**
+    * Elimina lógicamente un legajo usando una conexión existente (versión transaccional)
+    * Marca como eliminado (baja lógica) el legajo
+    * @param id Id del legajo que se desea eliminar
+    * @param conex Conexión transaccional activa
+    * @throws Exception Si ocurre un error de ejecución
+    */
+    
+    @Override
+    public void eliminarTx(int id, Connection conex) throws Exception {
+        try (PreparedStatement stmt = conex.prepareStatement(DELETE_SQL)) {
             stmt.setInt(1, id);
             int rowsAffected = stmt.executeUpdate();
 

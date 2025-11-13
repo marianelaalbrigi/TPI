@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Legajo extends Base  {
-     private String nroLegajo;
+    private String nroLegajo;
     private String categoria;
     private Estado estado;
     private Date fechaAlta;
