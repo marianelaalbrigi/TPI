@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Types;
 import tpiprogramacionii.entities.Empleado;
 import tpiprogramacionii.entities.Legajo;
 import tpiprogramacionii.utils.DataBaseConnection;
@@ -16,7 +17,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
         //QUERYS IMPLEMENTADAS: ---------------------------------------------------------------------------------------------
     
     //Insertar de empleado (id autoincremental)
-    private static final String INSERT_SQL = "INSERT INTO empleado (nombre, apellido, dni) VALUES (?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO empleado (nombre, apellido, dni, email, fecha_ingreso, area) VALUES (?, ?, ?, ?, ?, ?)";
     
     //Actualizar area del empleado 
     private static final String UPDATE_AREA = "UPDATE empleado SET area = ? WHERE id = ?";
@@ -244,6 +245,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
          
     /**
      * Asigna los valores de un empleado a los parámetros del PreparedStatement
+     * Verifica los campos nulos antes de asignarlos.
      * @param stmt PreparedStatement donde se van a asignar los valores
      * @param empleado contiene los valores necesarios para cualquier operación (INSERT/UPDATE)
      * @throws SQLException si hay error al asignar los parámetros
@@ -252,7 +254,25 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     private void setEmpleadoParameters(PreparedStatement stmt, Empleado empleado) throws SQLException {
         stmt.setString(1, empleado.getNombre());
         stmt.setString(2, empleado.getApellido());
-        stmt.setString(3, empleado.getDni());               
+        stmt.setString(3, empleado.getDni());  
+       
+        if (empleado.getEmail() != null) {
+            stmt.setString(4, empleado.getEmail());
+        } else {
+            stmt.setNull(4, Types.VARCHAR);
+        }
+
+        if (empleado.getFechaIngreso() != null) {
+            stmt.setDate(5, new java.sql.Date(empleado.getFechaIngreso().getTime()));
+        } else {
+            stmt.setNull(5, Types.DATE);
+        }
+
+        if (empleado.getArea() != null) {
+            stmt.setString(6, empleado.getArea());
+        } else {
+            stmt.setNull(6, Types.VARCHAR);
+        }
     }
     
     //--------------------------------------------------------------------------------------------------------------    
@@ -290,6 +310,9 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
         empleado.setNombre(rs.getString("nombre"));
         empleado.setApellido(rs.getString("apellido"));
         empleado.setDni(rs.getString("dni"));
+        empleado.setEmail(rs.getString("email"));
+        empleado.setFechaIngreso(rs.getDate("fecha_ingreso"));
+        empleado.setArea(rs.getString("area"));
 
         int idLegajo = rs.getInt("legajo_id");
         if (idLegajo > 0 && !rs.wasNull()) {

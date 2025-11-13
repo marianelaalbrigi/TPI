@@ -12,6 +12,7 @@ import tpiprogramacionii.entities.Legajo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Types;
 
 
 
@@ -20,7 +21,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     //QUERYS: --------------------------------------------------------------------------------------------------
    
     //Insertar de legajo (id autoincremental) 
-    private static final String INSERT_SQL = "INSERT INTO legajo (nro_legajo, categoria, estado) VALUES (?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO legajo (nro_legajo, categoria, estado, fecha_alta, observaciones) VALUES (?, ?, ?, ?, ?)";
    
     //Actualizar categoria en legajo 
     private static final String UPDATE_CATEGORIA = "UPDATE legajo SET categoria = ? WHERE id = ?";
@@ -64,25 +65,20 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     }
        
     //--------------------------------------------------------------------------------------------------------------    
-     /**
-     * Inserta un legajo en la base de datos (id de empleado autoincremental) usando una conexión existente.
-     * Recupera el Id autogenerado por la BD y lo asigna al objeto legajo
-     * @param legajo a insertar.
-     * @param conex Conexión activa proporcionada por la transacción.
-     * @throws Exception si ocurre un error al conectarse o ejecutar la instrucción SQL.
-     */
-             
+    /**
+    * Inserta un legajo en la base de datos (id de empleado autoincremental) usando una conexión existente.
+    * Recupera el Id autogenerado por la BD y lo asigna al objeto legajo
+    * @param legajo a insertar.
+    * @param conn CConexión activa proporcionada por la transacción.
+    * @throws Exception Si ocurre un error SQL durante la inserción.
+    */
+    
     @Override
     public void insertTx(Legajo legajo, Connection conex) throws Exception {
         try (PreparedStatement stmt = conex.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            
-            stmt.setString(1, legajo.getNroLegajo());
-            stmt.setString(2, legajo.getCategoria());
-            stmt.setString(3, legajo.getEstado().name());
+            setLegajoParameters(stmt, legajo);   
             stmt.executeUpdate();
-            
             legajo.setId(recuperarIdGenerado(stmt));
-              
         }
     }
         
@@ -191,7 +187,42 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     
     
     //METODOS PROPIOS ----------------------------------------------------------------------------------------------
-      
+         
+    /**
+     * Asigna los valores de un legajo a los parámetros del PreparedStatement
+     * Verifica los campos nulos antes de asignarlos.
+     * @param stmt PreparedStatement donde se van a asignar los valores
+     * @param legajo contiene los valores necesarios para cualquier operación (INSERT/UPDATE)
+     * @throws SQLException si hay error al asignar los parámetros
+    */        
+    
+    private void setLegajoParameters(PreparedStatement stmt, Legajo legajo) throws SQLException {
+        
+        stmt.setString(1, legajo.getNroLegajo());
+
+        if (legajo.getCategoria() != null) {
+            stmt.setString(2, legajo.getCategoria());
+        } else {
+            stmt.setNull(2, Types.VARCHAR);
+        }
+
+        stmt.setString(3, legajo.getEstado() != null ? legajo.getEstado().name() : Estado.ACTIVO.name());
+
+        if (legajo.getFechaAlta() != null) {
+            stmt.setDate(4, new java.sql.Date(legajo.getFechaAlta().getTime()));
+        } else {
+            stmt.setNull(4, Types.DATE);
+        }
+
+        if (legajo.getObservaciones() != null) {
+            stmt.setString(5, legajo.getObservaciones());
+        } else {
+            stmt.setNull(5, Types.VARCHAR);
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------------------    
+    
     /**
      * Recupera el Id autogenerado por la BD del registro recién creado
      * @param stmt PreparedStatement a través del cual se obtiene el Id
@@ -225,7 +256,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
             rs.getString("categoria")  
         );
     }
-        
+            
     //--------------------------------------------------------------------------------------------------------------    
        
     /**
