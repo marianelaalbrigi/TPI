@@ -29,7 +29,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
 
     
     //Buscar empleado por ID
-    private static final String SEARCH_BY_ID = "SELECT e.id, e.eliminado, e.nombre, e.apellido, e.dni, e.area, e.fechaIngreso, e.legajo_id, "+
+    private static final String SEARCH_BY_ID = "SELECT e.id, e.eliminado, e.nombre, e.apellido, e.dni, e.area, e.fecha_ingreso, e.email, e.legajo_id, "+
                                                "l.nro_legajo, l.categoria "+
                                                "FROM empleado AS e "+
                                                "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
