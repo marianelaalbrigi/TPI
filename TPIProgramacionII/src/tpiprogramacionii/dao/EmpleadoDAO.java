@@ -36,7 +36,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
                                                "WHERE e.id = ? AND e.eliminado = FALSE";
     
     //Buscar empleado activo por dni
-    private static final String SEARCH_BY_DNI = "SELECT e.id, e.nombre, e.apellido, e.dni, e.area, l.nro_legajo, l.categoria "+
+    private static final String SEARCH_BY_DNI = "SELECT e.id, e.nombre, e.apellido, e.dni, e.area, e.email, l.nro_legajo, l.categoria "+
                                                 "FROM empleado AS e "+
                                                 "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
                                                 "WHERE e.eliminado = FALSE AND dni = ?";
