@@ -1,7 +1,6 @@
 
 package tpiprogramacionii.dao;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -69,7 +68,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     * Inserta un legajo en la base de datos (id de empleado autoincremental) usando una conexión existente.
     * Recupera el Id autogenerado por la BD y lo asigna al objeto legajo
     * @param legajo a insertar.
-    * @param conn CConexión activa proporcionada por la transacción.
+    * @param conex CConexión activa proporcionada por la transacción.
     * @throws Exception Si ocurre un error SQL durante la inserción.
     */
     
@@ -111,7 +110,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     public void actualizarTx(Legajo legajo, Connection conex) throws Exception {
         try (PreparedStatement stmt = conex.prepareStatement(UPDATE_CATEGORIA)) {
             stmt.setString(1, legajo.getCategoria());
-            stmt.setInt(2, legajo.getId());
+            stmt.setLong(2, legajo.getId());
             
             int rows = stmt.executeUpdate();
             if (rows == 0) {
@@ -130,7 +129,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     */
     
     @Override
-    public void eliminar(int id) throws Exception {
+    public void eliminar(Long id) throws Exception {
         try (Connection conex = DataBaseConnection.getConnection()) {
             eliminarTx(id, conex);
         }
@@ -147,9 +146,9 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     */
     
     @Override
-    public void eliminarTx(int id, Connection conex) throws Exception {
+    public void eliminarTx(Long id, Connection conex) throws Exception {
         try (PreparedStatement stmt = conex.prepareStatement(DELETE_SQL)) {
-            stmt.setInt(1, id);
+            stmt.setLong(1, id);
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected == 0) {
@@ -168,12 +167,12 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     */
     
     @Override
-    public Legajo leer(int id) throws Exception {
+    public Legajo leer(Long id) throws Exception {
        
         try (Connection conex = DataBaseConnection.getConnection();
                 PreparedStatement stmt = conex.prepareStatement(SEARCH_BY_ID)) {
 
-            stmt.setInt(1, id);
+            stmt.setLong(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -258,10 +257,10 @@ public class LegajoDAO implements GenericDAO <Legajo>{
      * @throws SQLException si hay un error al recuperar el Id 
      */
     
-    private int recuperarIdGenerado(PreparedStatement stmt) throws SQLException {
+    private Long recuperarIdGenerado(PreparedStatement stmt) throws SQLException {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
+                return generatedKeys.getLong(1);
             } else {
                 throw new SQLException("No pudo obtener el ID del legajo");
             }
@@ -279,7 +278,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     
     private Legajo mapResultSetToLegajo(ResultSet rs) throws SQLException {
         return new Legajo(
-            rs.getInt("id"),
+            rs.getLong("id"),
             rs.getString("nro_legajo"),
             rs.getString("categoria")  
         );
@@ -294,13 +293,13 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     * @throws SQLException si hay error en la conexión o ejecución
     * @throws IllegalArgumentException si el estado no es válido
     */
-    public void cambiarEstado(int id, Estado nuevoEstado) throws SQLException {
+    public void cambiarEstado(Long id, Estado nuevoEstado) throws SQLException {
       
        try (Connection conex = DataBaseConnection.getConnection();
                PreparedStatement stmt = conex.prepareStatement(UPDATE_ESTADO)) {
 
             stmt.setString(1, nuevoEstado.name());
-            stmt.setInt(2, id);
+            stmt.setLong(2, id);
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {

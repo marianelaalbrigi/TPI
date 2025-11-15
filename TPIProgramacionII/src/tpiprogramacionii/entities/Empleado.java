@@ -18,7 +18,7 @@ public class Empleado extends Base {
     }
 
     //Para crear un empleado, son necesarios los siguientes atributos
-    public Empleado(int id, String nombre, String apellido, String dni) {
+    public Empleado(Long id, String nombre, String apellido, String dni) {
         super(id, false);
         this.nombre = nombre;
         this.apellido = apellido;

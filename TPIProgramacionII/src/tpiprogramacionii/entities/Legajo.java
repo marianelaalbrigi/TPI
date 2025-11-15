@@ -15,7 +15,7 @@ public class Legajo extends Base  {
         super();
     }
 
-    public Legajo(int id, String nroLegajo, String categoria) {
+    public Legajo(Long id, String nroLegajo, String categoria) {
         super(id, false);
         this.nroLegajo = nroLegajo;
         this.categoria = categoria;

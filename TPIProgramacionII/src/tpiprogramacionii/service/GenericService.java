@@ -34,7 +34,7 @@ public interface GenericService<T> {
      * @param id ID de la entidad a eliminar
      * @throws Exception Si falla la eliminación
      */
-    void eliminar(int id) throws Exception;
+    void eliminar(Long id) throws Exception;
     
     /**
      * Obtiene una entidad por su ID
@@ -42,7 +42,7 @@ public interface GenericService<T> {
      * @return La entidad encontrada o null si no existe
      * @throws Exception Si ocurre un error al consultar
      */
-    T getById(int id) throws Exception;
+    T getById(Long id) throws Exception;
     
     /**
      * Obtiene todas las entidades activas (eliminado = false)

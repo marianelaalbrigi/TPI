@@ -88,7 +88,7 @@ public class MenuController {
                 legajo = new Legajo();   // legajo con los valores por defecto
             }
 
-             Empleado empleado = new Empleado(0,nombre, apellido, dni);
+             Empleado empleado = new Empleado(0L,nombre, apellido, dni);
              empleado.setEmail(email);
              empleado.setFechaIngreso(fechaIngreso);
              empleado.setArea(area);
@@ -111,7 +111,7 @@ public class MenuController {
         
         try {    
             System.out.println("Ingrese el ID del empleado que desea buscar: ");
-            int empleadoID = Integer.parseInt(scanner.nextLine().trim());
+            long empleadoID = Long.parseLong(scanner.nextLine().trim());
             Empleado e = empleadoService.getById(empleadoID);   
               
              
@@ -185,8 +185,7 @@ public class MenuController {
     public void actualizarAreaEmpleado(){
        try {
         System.out.print("Ingrese el ID del empleado al que desea actualizar su area: ");
-        int empleadoId = Integer.parseInt(scanner.nextLine().trim());
-       
+        long empleadoId = Long.parseLong(scanner.nextLine().trim());
         Empleado e = empleadoService.getById(empleadoId);
         
         if (e == null) {
@@ -236,7 +235,7 @@ public class MenuController {
         
          try {
                 System.out.print("Ingrese el ID del empleado que desea eliminar: ");
-                int id = Integer.parseInt(scanner.nextLine().trim());
+                long id = Long.parseLong(scanner.nextLine().trim());
 
                 //Buscar empleado para mostrar info antes de eliminar.
                 Empleado empleado = empleadoService.getById(id);
@@ -358,7 +357,7 @@ public class MenuController {
         String observaciones = observacionesInput.isEmpty() ? null : observacionesInput;
         
         //Se crea el legajo con los datos que ingreso el usuario.
-        Legajo legajo = new Legajo(0, nroLegajo, categoria);
+        Legajo legajo = new Legajo(0L, nroLegajo, categoria);
         legajo.setNroLegajo(nroLegajo);
         legajo.setCategoria(categoria);
         legajo.setEstado(estado);         
@@ -417,7 +416,7 @@ public class MenuController {
     
      try {    
             System.out.println("Ingrese el ID del legajo que desea buscar: ");
-            int legajoId = Integer.parseInt(scanner.nextLine().trim());
+            long legajoId = Long.parseLong(scanner.nextLine().trim());
             Legajo legajo = legajoService.getById(legajoId);
               
              if (legajo == null){
@@ -474,7 +473,7 @@ public class MenuController {
         
         try {
         System.out.print("Ingrese el ID del legajo que desea actualizar: ");
-        int idLegajo = Integer.parseInt(scanner.nextLine().trim());
+        long idLegajo = Long.parseLong(scanner.nextLine().trim());
 
        
         Legajo legajo = legajoService.getById(idLegajo);  
@@ -533,7 +532,7 @@ public class MenuController {
     
         try {
             System.out.println("Ingrese el ID del legajo que desea eliminar: ");
-            int legajoId = Integer.parseInt(scanner.nextLine().trim());
+            long legajoId = Long.parseLong(scanner.nextLine().trim());
             
             Legajo legajo = legajoService.getById(legajoId);
             if(legajo == null) {

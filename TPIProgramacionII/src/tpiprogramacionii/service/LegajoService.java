@@ -164,7 +164,7 @@ public class LegajoService implements GenericService<Legajo> {
      * @throws Exception Si falla la transacción
      */
     @Override
-    public void eliminar(int id) throws Exception {
+    public void eliminar(Long id) throws Exception {
         if (id <= 0) {
             throw new IllegalArgumentException("El ID del legajo debe ser mayor a 0");
         }
@@ -230,7 +230,7 @@ public class LegajoService implements GenericService<Legajo> {
      * @throws Exception Si ocurre un error al consultar
      */
     @Override
-    public Legajo getById(int id) throws Exception {
+    public Legajo getById(Long id) throws Exception {
         if (id <= 0) {
             throw new IllegalArgumentException("El ID del legajo debe ser mayor a 0");
         }
@@ -268,7 +268,7 @@ public class LegajoService implements GenericService<Legajo> {
      * @param nuevoEstado Nuevo estado a asignar
      * @throws Exception Si falla la operación
      */
-    public void cambiarEstado(int id, Estado nuevoEstado) throws Exception {
+    public void cambiarEstado(Long id, Estado nuevoEstado) throws Exception {
         if (id <= 0) {
             throw new IllegalArgumentException("El ID del legajo debe ser mayor a 0");
         }

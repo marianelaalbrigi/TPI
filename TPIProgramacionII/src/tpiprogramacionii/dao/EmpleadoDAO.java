@@ -26,54 +26,30 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     private static final String DELETE_SQL = "UPDATE empleado "+
                                              "SET eliminado = TRUE "+
                                              "WHERE id = ? AND eliminado = FALSE";
-
     
     //Buscar empleado por ID
-    private static final String SEARCH_BY_ID = "SELECT e.id, e.eliminado, e.nombre, e.apellido, e.dni, e.area, e.fecha_ingreso, e.email, e.legajo_id, "+
-                                               "l.nro_legajo, l.categoria "+
-                                               "FROM empleado AS e "+
-                                               "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
-                                               "WHERE e.id = ? AND e.eliminado = FALSE";
+    private static final String SEARCH_BY_ID = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
+                                                "l.id AS legajo_id, l.nro_legajo, l.categoria " +
+                                                "FROM empleado e " +
+                                                "LEFT JOIN legajo l ON e.legajo_id = l.id " +
+                                                "\"WHERE e.id = ? AND e.eliminado = FALSE";
     
     //Buscar empleado activo por dni
-    private static final String SEARCH_BY_DNI = "SELECT e.id, e.nombre, e.apellido, e.dni, e.area, e.email, l.nro_legajo, l.categoria "+
-                                                "FROM empleado AS e "+
-                                                "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
-                                                "WHERE e.eliminado = FALSE AND dni = ?";
+    private static final String SEARCH_BY_DNI = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
+                                                "l.id AS legajo_id, l.nro_legajo, l.categoria " +
+                                                "FROM empleado e " +
+                                                "LEFT JOIN legajo l ON e.legajo_id = l.id " +
+                                                "WHERE e.eliminado = FALSE AND e.dni = ?";
     
-    //Listar a todos los empleados activos.   
-    private static final String SELECT_ALL_ACTIVE = "SELECT e.id, e.nombre, e.apellido, e.dni, e.area, "+
-                                                   "l.nro_legajo, l.categoria "+
-                                                   "FROM empleado AS e "+
-                                                   "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
-                                                   "WHERE e.eliminado = FALSE AND UPPER(l.estado) = 'ACTIVO'";
+    //Listar a todos los empleados activos.  
+    private static final String SELECT_ALL_ACTIVE = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
+                                                    "l.id AS legajo_id, l.nro_legajo, l.categoria " +
+                                                    "FROM empleado AS e " +
+                                                    "LEFT JOIN legajo AS l ON e.legajo_id = l.id " +
+                                                    "WHERE e.eliminado = FALSE AND UPPER(l.estado) = 'ACTIVO'";
+
     
-    /*QUERYS ALTERNATIVAS NO IMPLEMENTADAS:
-    
-    //Actualizar el email del empleado 
-    private static final String UPDATE_EMAIL = "UPDATE empleado SET email = ? WHERE id = ?";
-    
-    //Listar empleados activos por area
-    private static final String SEARCH_BY_AREA_SQL = "SELECT e.id, e.nombre, e.apellido, e.dni, l.nro_legajo, l.categoria "+
-                                                     "FROM empleado AS e "+
-                                                     "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
-                                                     "WHERE e.eliminado = FALSE AND e.area = ?";
-    
-    
-    //Listar a todos los empleados que no están activos y que no fueron borrados (logicamente).   
-    private static final String SELECT_ALL_INACTIV = "SELECT e.id, e.nombre, e.apellido, e.dni, e.area, "+
-                                                     "l.nro_legajo, l.categoria "+
-                                                     "FROM empleado AS e "+
-                                                     "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
-                                                     "WHERE e.eliminado = FALSE AND l.estado = 'INACTIVO'";
-    
-    //Listar a todos los empleados borrados (logicamente).
-    private static final String SELECT_ALL_ELIMINADOS = "SELECT e.id, e.nombre, e.apellido, e.dni, e.area, "+
-                                                        "l.nro_legajo, l.categoria, l.estado "+
-                                                        "FROM empleado AS e "+
-                                                        "LEFT JOIN legajo AS l ON e.legajo_id = l.id "+
-                                                        "WHERE e.eliminado = TRUE";
-    */    
+    private static final String UPDATE_LEGAJO_ID = "UPDATE empleado SET legajo_id = ? WHERE id = ?";
     
     
     private final LegajoDAO legajoDAO; 
@@ -99,28 +75,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     @Override
     public void insertar(Empleado empleado) throws Exception {
         try (Connection conex = DataBaseConnection.getConnection()){
-            
-             conex.setAutoCommit(false);
-
-            try {
-                insertTx(empleado, conex);
-
-                // Crear Legajo automáticamente usando el id generado del empleado
-                Legajo legajo = new Legajo();
-                legajo.setNroLegajo("LEG" + String.format("%06d", empleado.getId()));
-                legajo.setEstado(tpiprogramacionii.entities.Estado.ACTIVO);
-                
-                legajoDAO.insertTx(legajo, conex);
-                empleado.setLegajo(legajo);
-
-                conex.commit();
-
-            } catch (Exception e) {
-                conex.rollback();
-                throw e;
-            } finally {
-                conex.setAutoCommit(true);
-            }
+            insertTx(empleado, conex);
         }
     }    
     
@@ -171,7 +126,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     public void actualizarTx(Empleado empleado, Connection conn) throws Exception {
         try (PreparedStatement stmtArea = conn.prepareStatement(UPDATE_AREA)) {
             stmtArea.setString(1, empleado.getArea());
-            stmtArea.setInt(2, empleado.getId());
+            stmtArea.setLong(2, empleado.getId());
                         
             int rowsAffected = stmtArea.executeUpdate();
             if (rowsAffected == 0) {
@@ -190,7 +145,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     */
     
     @Override
-    public void eliminar(int id) throws Exception {
+    public void eliminar(Long id) throws Exception {
         try (Connection conex = DataBaseConnection.getConnection()) {
             eliminarTx(id, conex);
         }
@@ -207,9 +162,9 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     */
     
     @Override
-    public void eliminarTx(int id, Connection conex) throws Exception {
+    public void eliminarTx(Long id, Connection conex) throws Exception {
         try (PreparedStatement stmt = conex.prepareStatement(DELETE_SQL)) {
-            stmt.setInt(1, id);
+            stmt.setLong(1, id);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {
                 throw new SQLException("El empleado con ID " + id + " ya estaba eliminado o no existe.");
@@ -228,10 +183,10 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     */
     
     @Override
-    public Empleado leer(int id) throws Exception {
+    public Empleado leer(Long id) throws Exception {
         try (Connection conex = DataBaseConnection.getConnection();
                 PreparedStatement stmt = conex.prepareStatement(SEARCH_BY_ID)) {
-            stmt.setInt(1, id);
+            stmt.setLong(1, id);
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -302,7 +257,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
         } else {
             stmt.setNull(6, Types.VARCHAR);
         }
-    }
+    }    
     
     //--------------------------------------------------------------------------------------------------------------    
     
@@ -315,7 +270,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     private void setIdGenerado(PreparedStatement stmt, Empleado empleado) throws SQLException {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                empleado.setId(generatedKeys.getInt(1));
+                empleado.setId(generatedKeys.getLong(1));
             } else {
                 throw new SQLException("La inserción de la persona falló, no se obtuvo ID generado");
             }
@@ -335,7 +290,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     
     private Empleado mapResultSetToEmpleado(ResultSet rs) throws SQLException {
         Empleado empleado = new Empleado();
-        empleado.setId(rs.getInt("id"));
+        empleado.setId(rs.getLong("id"));
         empleado.setNombre(rs.getString("nombre"));
         empleado.setApellido(rs.getString("apellido"));
         empleado.setDni(rs.getString("dni"));
@@ -350,6 +305,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
             legajo.setCategoria(rs.getString("categoria"));
             empleado.setLegajo(legajo);
         }
+       
         return empleado;
     }
     
@@ -378,5 +334,24 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
             }
         }
         return null;
+    }
+    
+    /**
+    * Actualiza la relación entre un empleado y su legajo en la base de datos.
+    * El campo`legajo_id en la tabla `empleado` se actualiza con el id de legajo 
+    * asignándole un nuevo legajo al empleado indicado.
+    *
+    * @param empleadoId ID del empleado al que se desea actualizar el legajo.
+    * @param legajoId Nuevo ID de legajo que se asignará al empleado.
+    * @param conex Conexión activa a la base de datos (no debe ser null).
+    * @throws SQLException si ocurre un error al ejecutar la sentencia SQL.
+    */
+    
+    public void actualizarLegajoId (Long empleadoId, Long legajoId, Connection conex)throws SQLException {
+        try (PreparedStatement stmt = conex.prepareStatement(UPDATE_LEGAJO_ID)){
+            stmt.setLong(1, legajoId);
+            stmt.setLong(2, empleadoId);
+            stmt.executeUpdate();
+        }
     }
 }

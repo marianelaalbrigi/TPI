@@ -3,23 +3,23 @@ package tpiprogramacionii.entities;
 
 public abstract class Base {
     
-    private int id;
+    private Long id;
     private boolean eliminado;
 
     protected Base() {
         this.eliminado = false;        
     }
 
-    protected Base(int id, boolean eliminado) {
+    protected Base(Long id, boolean eliminado) {
         this.id = id;
         this.eliminado = eliminado;
     }
            
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

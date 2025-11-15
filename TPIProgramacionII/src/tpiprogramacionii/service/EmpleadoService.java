@@ -76,8 +76,12 @@ public class EmpleadoService implements GenericService<Empleado> {
             // 3. Insertar Legajo
             legajoDAO.insertTx(legajo, conn);
             LOGGER.log(Level.INFO, "Legajo creado con número: {0}", legajo.getNroLegajo());
+                        
             
-            // 4. Asociar legajo al empleado (relación 1:1)
+            // 4. Actualizad FK de Empleado (legajo_id es FK (Tabla empleado) > id es PK (Tabla legajo))
+            empleadoDAO.actualizarLegajoId(empleado.getId(), legajo.getId(), conn);
+
+            // 5. Asociar legajo al empleado (relación 1:1)
             empleado.setLegajo(legajo);
             
             // Commit exitoso
@@ -190,7 +194,7 @@ public class EmpleadoService implements GenericService<Empleado> {
      * @throws Exception Si falla la transacción
      */
     @Override
-    public void eliminar(int id) throws Exception {
+    public void eliminar(Long id) throws Exception {
         if (id <= 0) {
             throw new IllegalArgumentException("El ID del empleado debe ser mayor a 0");
         }
@@ -266,7 +270,7 @@ public class EmpleadoService implements GenericService<Empleado> {
      * @throws Exception Si ocurre un error al consultar
      */
     @Override
-    public Empleado getById(int id) throws Exception {
+    public Empleado getById(Long id) throws Exception {
         if (id <= 0) {
             throw new IllegalArgumentException("El ID del empleado debe ser mayor a 0");
         }
@@ -331,7 +335,7 @@ public class EmpleadoService implements GenericService<Empleado> {
      * @param nuevaCategoria Nueva categoría para el legajo
      * @throws Exception Si falla la operación
      */
-    public void actualizarCategoriaLegajo(int idEmpleado, String nuevaCategoria) throws Exception {
+    public void actualizarCategoriaLegajo(Long idEmpleado, String nuevaCategoria) throws Exception {
         if (idEmpleado <= 0) {
             throw new IllegalArgumentException("El ID del empleado debe ser mayor a 0");
         }
