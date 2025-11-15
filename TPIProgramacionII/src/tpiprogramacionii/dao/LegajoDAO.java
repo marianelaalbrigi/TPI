@@ -19,31 +19,26 @@ public class LegajoDAO implements GenericDAO <Legajo>{
      
     //QUERYS: --------------------------------------------------------------------------------------------------
    
-    //Insertar de legajo (id autoincremental) 
+        //Insertar legajo (id autoincremental) 
     private static final String INSERT_SQL = "INSERT INTO legajo (nro_legajo, categoria, estado, fecha_alta, observaciones) VALUES (?, ?, ?, ?, ?)";
-   
-    //Actualizar categoria en legajo 
-    private static final String UPDATE_CATEGORIA = "UPDATE legajo SET categoria = ? WHERE id = ?";
-    
+
+    //Actualizar categoría en legajo 
+    private static final String UPDATE_CATEGORIA = "UPDATE legajo SET categoria = ? WHERE id = ? AND eliminado = FALSE";
+
     //Actualizar estado en legajo
-    private static final String  UPDATE_ESTADO = "UPDATE legajo SET estado = ? WHERE id = ? AND eliminado = FALSE";
-    
+    private static final String UPDATE_ESTADO = "UPDATE legajo SET estado = ? WHERE id = ? AND eliminado = FALSE";
+
     //Eliminar legajo (marca eliminado = TRUE)
-    private static final String DELETE_SQL = "UPDATE legajo "+
-                                             "SET eliminado = TRUE "+
-                                             "WHERE id = ? AND eliminado = FALSE";
+    private static final String DELETE_SQL = "UPDATE legajo SET eliminado = TRUE WHERE id = ? AND eliminado = FALSE";
 
     //Buscar legajo por ID
-    private static final String SEARCH_BY_ID = "SELECT id, nro_legajo, categoria, estado "+
-                                               "FROM legajo "+
-                                               "WHERE id = ? AND eliminado = FALSE";
+    private static final String SEARCH_BY_ID =  "SELECT id, nro_legajo, categoria, estado, fecha_alta, observaciones " +
+                                                "FROM legajo WHERE id = ? AND eliminado = FALSE";
 
-    
-    //Listar a todos los legajos activos.   
-    private static final String SELECT_ALL_ACTIV = "SELECT id, nro_legajo, categoria "+
-                                                   "FROM legajo "+
-                                                   "WHERE eliminado = FALSE AND UPPER(estado) = 'ACTIVO'";
-    
+    //Listar todos los legajos activos
+    private static final String SELECT_ALL_ACTIVE = "SELECT id, nro_legajo, categoria, estado, fecha_alta, observaciones " +
+                                                    "FROM legajo WHERE eliminado = FALSE AND UPPER(estado) = 'ACTIVO'";
+
     //CONSTRUCTOR ---------------------------------------------------------------------------------------------------
     public LegajoDAO() {} 
         
@@ -199,7 +194,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     public List<Legajo> leerTodos() throws Exception {
         List<Legajo> listaLegajos = new ArrayList<>();
         try(Connection conex = DataBaseConnection.getConnection(); 
-                PreparedStatement stmt = conex.prepareStatement(SELECT_ALL_ACTIV);
+                PreparedStatement stmt = conex.prepareStatement(SELECT_ALL_ACTIVE);
                 ResultSet rs = stmt.executeQuery()){
                
             while (rs.next()) {
@@ -276,14 +271,42 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     * @throws Exception en caso de error de conexión o de ejecución de la consulta.
     */
     
-    private Legajo mapResultSetToLegajo(ResultSet rs) throws SQLException {
+    /*private Legajo mapResultSetToLegajo(ResultSet rs) throws SQLException {
         return new Legajo(
             rs.getLong("id"),
             rs.getString("nro_legajo"),
-            rs.getString("categoria")  
+            rs.getString("categoria")            
         );
-    }
+    }*/
             
+    private Legajo mapResultSetToLegajo(ResultSet rs) throws SQLException {
+        Legajo legajo = new Legajo(
+            rs.getLong("id"),
+            rs.getString("nro_legajo"),
+            rs.getString("categoria")
+        );
+        
+        String estadoStr = rs.getString("estado");
+        if (estadoStr != null) {
+            legajo.setEstado(Estado.valueOf(estadoStr));
+        } else {
+            legajo.setEstado(Estado.ACTIVO);
+        }
+        
+        java.sql.Date fechaAltaSql = rs.getDate("fecha_alta");
+        if (fechaAltaSql != null) {
+            legajo.setFechaAlta(new java.util.Date(fechaAltaSql.getTime()));
+        }
+        
+        String observaciones = rs.getString("observaciones");
+        if (observaciones != null) {
+            legajo.setObservaciones(observaciones);
+        }
+
+        return legajo;        
+    }
+    
+    
     //--------------------------------------------------------------------------------------------------------------    
        
     /**

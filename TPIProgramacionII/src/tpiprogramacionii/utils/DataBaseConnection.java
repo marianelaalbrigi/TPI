@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.IOException;
 
 public class DataBaseConnection {
-    private static Connection connection = null;
+   /* private static Connection connection = null;
 
     public static Connection getConnection() {
         if (connection != null) {
@@ -41,5 +41,25 @@ public class DataBaseConnection {
 
         return connection;
     }
+    */
+        private static final String URL = "jdbc:mariadb://localhost:3306/pruebaconjava";
+        private static final String USER = "root";      // tu usuario de MariaDB/MySQL
+        private static final String PASSWORD = "";      // contraseña, si no tienes deja vacío
+
+        public static Connection getConnection() {
+            try {
+                // Forzar carga del driver de MariaDB
+                Class.forName("org.mariadb.jdbc.Driver");
+
+                // Conectar a la base de datos
+                return DriverManager.getConnection(URL, USER, PASSWORD);
+
+            } catch (ClassNotFoundException e) {
+                System.err.println("Driver de MariaDB no encontrado: " + e.getMessage());
+            } catch (SQLException e) {
+                System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+            }
+            return null;
+        }   
     
 }

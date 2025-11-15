@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Types;
 import tpiprogramacionii.entities.Empleado;
+import tpiprogramacionii.entities.Estado;
 import tpiprogramacionii.entities.Legajo;
 import tpiprogramacionii.utils.DataBaseConnection;
 
@@ -29,21 +30,22 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     
     //Buscar empleado por ID
     private static final String SEARCH_BY_ID = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
-                                                "l.id AS legajo_id, l.nro_legajo, l.categoria " +
+                                                "l.id AS legajo_id, l.nro_legajo, l.categoria, l.estado " +
                                                 "FROM empleado e " +
                                                 "LEFT JOIN legajo l ON e.legajo_id = l.id " +
-                                                "\"WHERE e.id = ? AND e.eliminado = FALSE";
+                                                "WHERE e.id = ? AND e.eliminado = FALSE";
     
     //Buscar empleado activo por dni
     private static final String SEARCH_BY_DNI = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
-                                                "l.id AS legajo_id, l.nro_legajo, l.categoria " +
+                                                "l.id AS legajo_id, l.nro_legajo, l.categoria, l.estado " +
                                                 "FROM empleado e " +
                                                 "LEFT JOIN legajo l ON e.legajo_id = l.id " +
+            
                                                 "WHERE e.eliminado = FALSE AND e.dni = ?";
     
     //Listar a todos los empleados activos.  
     private static final String SELECT_ALL_ACTIVE = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
-                                                    "l.id AS legajo_id, l.nro_legajo, l.categoria " +
+                                                    "l.id AS legajo_id, l.nro_legajo, l.categoria, l.estado " +
                                                     "FROM empleado AS e " +
                                                     "LEFT JOIN legajo AS l ON e.legajo_id = l.id " +
                                                     "WHERE e.eliminado = FALSE AND UPPER(l.estado) = 'ACTIVO'";
@@ -303,6 +305,10 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
             Legajo legajo = new Legajo();
             legajo.setNroLegajo(rs.getString("nro_legajo"));
             legajo.setCategoria(rs.getString("categoria"));
+            
+            String estadoStr = rs.getString("estado");
+            legajo.setEstado(estadoStr != null ? Estado.valueOf(estadoStr) : Estado.ACTIVO);
+
             empleado.setLegajo(legajo);
         }
        

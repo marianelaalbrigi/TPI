@@ -57,9 +57,9 @@ class AppMenu {
                   case 4 -> menuController.actualizarAreaEmpleado();
                   case 5 -> menuController.eliminarEmpleadoPorId();
                   case 6 -> menuController.buscarEmpleadoPorDni();
-                  case 7 -> menuController.crearLegajoIndependiente();
+                  case 7 -> menuController.listarLegajos();
                   case 8 -> menuController.buscarLegajoPorId();
-                  case 9 -> menuController.listarLegajos();
+                  case 9 -> menuController.actualizarCategoriaLegajo();
                   case 10 -> menuController.actualizarEstadoLegajo();
                   case 11 -> menuController.eliminarLegajoPorId();
                   case 0 -> {

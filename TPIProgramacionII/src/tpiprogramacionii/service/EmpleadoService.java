@@ -13,8 +13,6 @@ import tpiprogramacionii.entities.Estado;
 import tpiprogramacionii.entities.Legajo;
 import tpiprogramacionii.utils.DataBaseConnection;
 
-
-
 public class EmpleadoService implements GenericService<Empleado> {
     
     private static final Logger LOGGER = Logger.getLogger(EmpleadoService.class.getName());
@@ -147,7 +145,7 @@ public class EmpleadoService implements GenericService<Empleado> {
             
             // Ejecutar actualización
             empleadoDAO.actualizarTx(empleado, conn);
-            
+                  
             // Commit exitoso
             conn.commit();
             LOGGER.log(Level.INFO, "Empleado actualizado exitosamente ID: {0}", empleado.getId());

@@ -19,7 +19,7 @@ public class Legajo extends Base  {
         super(id, false);
         this.nroLegajo = nroLegajo;
         this.categoria = categoria;
-        this.estado = estado.ACTIVO;
+        this.estado = Estado.ACTIVO;
     }
 
     public String getNroLegajo() {

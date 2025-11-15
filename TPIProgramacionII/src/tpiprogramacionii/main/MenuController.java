@@ -311,60 +311,7 @@ public class MenuController {
     
     }
     
-  /**
- * Crear legajo Independiente..
- * Lee los datos del legajo desde consola, crea el objeto
- * Legajo y lo guarda a través de LegajoService.
- */    
-    public void crearLegajoIndependiente(){
-        //Nro de Legajo
-        System.out.print("Ingrese Nro. de legajo: ");
-        String nroLegajo = scanner.nextLine().trim().toUpperCase();
-        
-        //Categoria
-        System.out.print("Ingrese la categoria: ");
-        String categoria = scanner.nextLine().trim().toUpperCase();
-        
-        //Si se ingresa un estado vacio el DAO contiene el ESTADO.ACTIVO por defecto (opcional)
-        System.out.print("Ingrese el estado (opcional, Enter para omitir): ");
-        String  estadoInput = scanner.nextLine().trim().toUpperCase();
-        
-        Estado estado = null;
-        if (!estadoInput.isEmpty()) {
-            try {
-                 estado = Estado.valueOf(estadoInput.toUpperCase());
-            } catch (IllegalArgumentException ex) {
-                 System.out.println("Estado inválido, se usará ACTIVO por defecto.");
-                 estado = null; 
-            }
-        }
-
-        //Fecha de alta (opcional)
-        System.out.print("Fecha de alta (opcional, formato yyyy-MM-dd, Enter para omitir): ");
-        String fechaStr = scanner.nextLine().trim();
-
-        Date fechaAlta = null;  
-        if (!fechaStr.isEmpty()) {
-            try {
-                fechaAlta = java.sql.Date.valueOf(fechaStr);   
-            } catch (IllegalArgumentException ex) {
-                System.out.println("Fecha inválida, se dejará vacía.");
-            }
-        }
-        //Observaciones (opcional)
-        System.out.print("Observaciones (opcional, Enter para omitir): ");
-        String observacionesInput = scanner.nextLine().trim();
-        String observaciones = observacionesInput.isEmpty() ? null : observacionesInput;
-        
-        //Se crea el legajo con los datos que ingreso el usuario.
-        Legajo legajo = new Legajo(0L, nroLegajo, categoria);
-        legajo.setNroLegajo(nroLegajo);
-        legajo.setCategoria(categoria);
-        legajo.setEstado(estado);         
-        legajo.setFechaAlta(fechaAlta);  
-        legajo.setObservaciones(observaciones);   
-    } 
-    
+     
     public Legajo crearLegajo(){
         
          //Categoria
@@ -508,12 +455,8 @@ public class MenuController {
             return;
         }
 
-        //Actualizo SOLO el estado en el objeto
-        legajo.setEstado(nuevoEstado);
 
-        //Delego todo al service (validaciones + transacción + DAO)
-        legajoService.actualizar(legajo);
-
+        legajoService.cambiarEstado(idLegajo, nuevoEstado);
         System.out.println("Estado del legajo actualizado correctamente.");
 
     } catch (NumberFormatException e) {
