@@ -5,22 +5,31 @@ import java.util.Scanner;
 import tpiprogramacionii.dao.EmpleadoDAO;
 import tpiprogramacionii.dao.LegajoDAO;
 import tpiprogramacionii.service.EmpleadoService;
+import tpiprogramacionii.service.LegajoService;
 
 
 class AppMenu {
 
- private final Scanner scanner;
-         private final MenuController menuController;
-         private boolean running;
-       
-         public  AppMenu() {
-             this.scanner = new Scanner(System.in);
-             EmpleadoService empleadoService = createEmpleadoService();
-             this.menuController = new MenuController(scanner, empleadoService);
-             this.running = true;
-         }
+        private final Scanner scanner;
+        private final MenuController menuController;
+        private final EmpleadoService empleadoService;
+        private final LegajoService legajoService;
+        private boolean running;
 
-       
+        public AppMenu() {
+            this.scanner = new Scanner(System.in);
+            // DAOs
+            LegajoDAO legajoDAO = new LegajoDAO();
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO(legajoDAO);
+            // Services
+            this.legajoService = new LegajoService(legajoDAO);
+            this.empleadoService = new EmpleadoService(empleadoDAO, legajoDAO);
+            // Controller
+            this.menuController = new MenuController(scanner, empleadoService, legajoService);
+            this.running = true;
+        }
+
+
          public static void main(String[] args) {
                AppMenu app = new AppMenu();
                app.run();
@@ -39,8 +48,7 @@ class AppMenu {
              scanner.close();
          }
           
-          
-          
+
          private void processOption(int opcion) {
              switch (opcion) {
                   case 1 -> menuController.crearEmpleado();
@@ -60,11 +68,5 @@ class AppMenu {
                  }
             default -> System.out.println("Opcion no valida.");
             }
-         }    
-             
-         private EmpleadoService createEmpleadoService() {
-                LegajoDAO legajoDAO = new LegajoDAO();
-                EmpleadoDAO empleadoDAO = new EmpleadoDAO(legajoDAO);
-                return new EmpleadoService(empleadoDAO, legajoDAO);
-        }       
+         }                    
 }

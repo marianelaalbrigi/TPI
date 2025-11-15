@@ -22,7 +22,7 @@ public class MenuController {
          private LegajoService legajoService;
    
    
-         public MenuController(Scanner scanner, EmpleadoService empleadoService) {
+         public MenuController(Scanner scanner, EmpleadoService empleadoService,LegajoService legajoService) {
               if (scanner == null) {
                  throw new IllegalArgumentException("Scanner no puede ser null");
               }
@@ -31,6 +31,7 @@ public class MenuController {
                }
              this.scanner = scanner;
              this.empleadoService = empleadoService;
+             this.legajoService= legajoService;
         }
          
          
@@ -41,8 +42,7 @@ public class MenuController {
  * Muestra mensajes claros de éxito o error.
  */
     public void crearEmpleado(){
-        
-        try {
+               try {
             System.out.print("Nombre del empleado: ");
             String nombre = scanner.nextLine().trim().toUpperCase();
             
@@ -75,12 +75,24 @@ public class MenuController {
                             System.out.println("Fecha inválida.");
                         }
                  }
-            
-            
+             
+             // PREGUNTAR si quiere editar campos opcionales del legajo
+            System.out.print("¿Desea editar los campos opcionales del legajo? (S/N): ");
+            String opcion = scanner.nextLine().trim().toUpperCase();
+
+            Legajo legajo;
+
+            if (opcion.equals("S")) {
+                legajo = crearLegajo();  // Legajo con campos opcionales
+            } else {
+                legajo = new Legajo();   // legajo con los valores por defecto
+            }
+
              Empleado empleado = new Empleado(0,nombre, apellido, dni);
              empleado.setEmail(email);
              empleado.setFechaIngreso(fechaIngreso);
              empleado.setArea(area);
+             empleado.setLegajo(legajo); // Asocio el legajo al empleado ANTES de llamar al servicio
              
              empleadoService.insertar(empleado);
              System.out.println("Empleado creado exitosamente, con ID: " + empleado.getId());
@@ -172,7 +184,7 @@ public class MenuController {
  */
     public void actualizarAreaEmpleado(){
        try {
-        System.out.println("Ingrese el ID del empleado al que desea actualizar su area: ");
+        System.out.print("Ingrese el ID del empleado al que desea actualizar su area: ");
         int empleadoId = Integer.parseInt(scanner.nextLine().trim());
        
         Empleado e = empleadoService.getById(empleadoId);
@@ -351,11 +363,51 @@ public class MenuController {
         legajo.setCategoria(categoria);
         legajo.setEstado(estado);         
         legajo.setFechaAlta(fechaAlta);  
-        legajo.setObservaciones(observaciones);
-         
-        
-    }
+        legajo.setObservaciones(observaciones);   
+    } 
     
+    public Legajo crearLegajo(){
+        
+         //Categoria
+        System.out.print("Ingrese la categoria (opcional, Enter para omitir): ");
+        String categoriaInput = scanner.nextLine().trim().toUpperCase();
+        String categoria = null;
+        if (!categoriaInput.isEmpty()) {
+            try {
+                 categoria = categoriaInput;
+            } catch (IllegalArgumentException ex) {
+                 System.out.println("Estado inválido, se usará ACTIVO por defecto.");
+                 categoria = null; 
+            }
+        }
+  
+          //ESTADO
+          //Si se ingresa un estado vacio el DAO contiene el ESTADO.ACTIVO por defecto (opcional)
+        System.out.print("Ingrese el estado (opcional, Enter para omitir): ");
+        String  estadoInput = scanner.nextLine().trim().toUpperCase();
+        
+        Estado estado = null;
+        if (!estadoInput.isEmpty()) {
+            try {
+                 estado = Estado.valueOf(estadoInput.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                 System.out.println("Estado inválido, se usará ACTIVO por defecto.");
+                 estado = null; 
+            }
+        }
+        //Observaciones (opcional)
+        System.out.print("Observaciones (opcional, Enter para omitir): ");
+        String observacionesInput = scanner.nextLine().trim();
+        String observaciones = observacionesInput.isEmpty() ? null : observacionesInput;
+        
+        Legajo legajo = new Legajo();
+        legajo.setCategoria(categoria);
+        legajo.setEstado(estado);
+        legajo.setObservaciones(observaciones);
+        
+        return legajo;
+    }
+
   /**
  * Búsqueda de legajo por ID.
  * Pide el ID de legajo, consulta a LegajoService
