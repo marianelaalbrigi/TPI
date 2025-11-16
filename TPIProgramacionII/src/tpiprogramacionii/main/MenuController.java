@@ -173,7 +173,9 @@ public class MenuController {
                   System.out.println("\nnroLegajo= " + e.getLegajo().getNroLegajo() +
                      "\ncategoria= " + e.getLegajo().getCategoria() + 
                      "\nestado= " + e.getLegajo().getEstado() + 
-                     "\nfechaAlta= " + e.getLegajo().getFechaAlta());
+                     "\nfechaAlta= " + e.getLegajo().getFechaAlta() +
+                     "\nobservaciones= " + e.getLegajo().getObservaciones());
+
                 }
             }   
          } catch (Exception e) {
@@ -383,7 +385,8 @@ public class MenuController {
                      "\nnroLegajo= " + legajo.getNroLegajo() +
                      "\ncategoria= " + legajo.getCategoria() + 
                      "\nestado= " + legajo.getEstado() + 
-                     "\nfechaAlta= " + legajo.getFechaAlta());
+                     "\nfechaAlta= " + legajo.getFechaAlta() +
+                     "\nObservaciones= " + legajo.getObservaciones());
             
         } catch (NumberFormatException e) {
                 System.err.println("El ID debe ser un número entero.");

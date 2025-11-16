@@ -235,7 +235,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
         } else {
             stmt.setNull(4, Types.DATE);
         }
-
+        
         if (legajo.getObservaciones() != null) {
             stmt.setString(5, legajo.getObservaciones());
         } else {
@@ -297,6 +297,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
         if (fechaAltaSql != null) {
             legajo.setFechaAlta(new java.util.Date(fechaAltaSql.getTime()));
         }
+        
         
         String observaciones = rs.getString("observaciones");
         if (observaciones != null) {
