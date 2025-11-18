@@ -21,6 +21,9 @@ public class MenuController {
 /**
 * Constructor del controlador del menú.
 * Valida que los servicios y el scanner no sean null.
+* @param scanner
+* @param empleadoService
+* @param legajoService
 */  
          
          public MenuController(Scanner scanner, EmpleadoService empleadoService,LegajoService legajoService) {
@@ -321,6 +324,7 @@ public class MenuController {
     * Agregar o modificar campos opcionales.
     * Permiote ingresar(Categoria, Estado y Observaciones).
     * Los campos principales del legajo se crear automaticamente al crear un empleado.
+     * @return 
     */  
     public Legajo crearLegajo(){
         
