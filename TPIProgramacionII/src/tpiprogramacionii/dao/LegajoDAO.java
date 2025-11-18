@@ -19,7 +19,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
      
     //QUERYS: --------------------------------------------------------------------------------------------------
    
-        //Insertar legajo (id autoincremental) 
+    //Insertar legajo (id autoincremental) 
     private static final String INSERT_SQL = "INSERT INTO legajo (nro_legajo, categoria, estado, fecha_alta, observaciones) VALUES (?, ?, ?, ?, ?)";
 
     //Actualizar categoría en legajo 
@@ -270,15 +270,7 @@ public class LegajoDAO implements GenericDAO <Legajo>{
     * @return legajo
     * @throws Exception en caso de error de conexión o de ejecución de la consulta.
     */
-    
-    /*private Legajo mapResultSetToLegajo(ResultSet rs) throws SQLException {
-        return new Legajo(
-            rs.getLong("id"),
-            rs.getString("nro_legajo"),
-            rs.getString("categoria")            
-        );
-    }*/
-            
+        
     private Legajo mapResultSetToLegajo(ResultSet rs) throws SQLException {
         Legajo legajo = new Legajo(
             rs.getLong("id"),
