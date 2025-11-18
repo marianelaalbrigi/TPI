@@ -14,9 +14,8 @@ import tpiprogramacionii.utils.DataBaseConnection;
  * Servicio para la gestión de Legajos
  * Implementa la lógica de negocio y control transaccional para operaciones CRUD
  * Todas las operaciones de escritura (insert/update/delete) manejan transacciones
- * 
- * @author jnowell
- */
+  */
+
 public class LegajoService implements GenericService<Legajo> {
     
     private static final Logger LOGGER = Logger.getLogger(LegajoService.class.getName());

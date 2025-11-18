@@ -40,8 +40,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     private static final String SEARCH_BY_DNI = "SELECT e.id, e.nombre, e.apellido, e.dni, e.email, e.fecha_ingreso, e.area, " +
                                                 "l.id AS legajo_id, l.nro_legajo, l.categoria, l.estado, l.fecha_alta, l.observaciones " +
                                                 "FROM empleado e " +
-                                                "LEFT JOIN legajo l ON e.legajo_id = l.id " +
-            
+                                                "LEFT JOIN legajo l ON e.legajo_id = l.id " +            
                                                 "WHERE e.eliminado = FALSE AND e.dni = ?";
     
     //Listar a todos los empleados activos.  
