@@ -209,8 +209,7 @@ TPIProgramacionII/
 ---
 
 ## Link al video 
-youtube.com/watch?si=VQUuiX6ECuicFDQS&v=yVh0wiCOpFk&feature=youtu.be
-
+[Ver video en YouTube](https://www.youtube.com/watch?v=yVh0wiCOpFk)
 
 ## Notas Adicionales
 
