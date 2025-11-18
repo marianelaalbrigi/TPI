@@ -15,7 +15,8 @@ import tpiprogramacionii.entities.Legajo;
 import tpiprogramacionii.utils.DataBaseConnection;
 
 public class EmpleadoDAO implements GenericDAO<Empleado> {
-        //QUERYS IMPLEMENTADAS: ---------------------------------------------------------------------------------------------
+   
+    //QUERYS IMPLEMENTADAS: ---------------------------------------------------------------------------------------------
     
     //Insertar de empleado (id autoincremental)
     private static final String INSERT_SQL = "INSERT INTO empleado (nombre, apellido, dni, email, fecha_ingreso, area) VALUES (?, ?, ?, ?, ?, ?)";
@@ -333,7 +334,7 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
     * Busca un empleado activo por su DNI.
     * @param dni del empleado a buscar.
     * @return objeto Empleado si se encuentra, o null si no existe.
-    * @throws Exception en caso de error de conexión o ejecución de la consulta.
+    * @throws SQLException en caso de error de conexión o ejecución de la consulta.
     */ 
     
     public Empleado buscarPorDni(String dni) throws SQLException {
@@ -353,6 +354,8 @@ public class EmpleadoDAO implements GenericDAO<Empleado> {
         }
         return null;
     }
+    
+    //--------------------------------------------------------------------------------------------------------------    
     
     /**
     * Actualiza la relación entre un empleado y su legajo en la base de datos.
