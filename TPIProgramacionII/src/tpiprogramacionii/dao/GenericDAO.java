@@ -3,6 +3,13 @@ package tpiprogramacionii.dao;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * Interfaz genérica para los DAOs del sistema.
+ * Encapsula las operaciones CRUD asegurando un acceso a datos
+ * consistente y separado de la lógica de negocio.
+ * @param <T> Tipo de entidad manejada por el DAO.
+ */
+
 public interface GenericDAO<T> {
     
     // Métodos autónomos (crean su propia conexión)

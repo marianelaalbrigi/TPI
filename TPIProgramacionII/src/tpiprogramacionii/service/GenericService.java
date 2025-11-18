@@ -6,10 +6,9 @@ import java.util.List;
  * Interfaz genérica para la capa de servicios
  * Define las operaciones CRUD básicas con manejo transaccional
  * Todas las operaciones incluyen validaciones de negocio y control de transacciones
- * 
  * @param <T> Tipo de entidad que maneja el servicio
- * @author jnowell
  */
+
 public interface GenericService<T> {
     
     /**
